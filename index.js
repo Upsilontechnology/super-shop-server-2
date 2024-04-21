@@ -4,8 +4,8 @@ const globalErrorHandler = require("./utils/globalErrorHandler");
 // const routes = require("./routes");
 const applyMiddleware = require("./middlewares");
 const authRoutes = require("./routes/authRoutes");
-const adminRoutes = require("./routes/userRoutes");
-const employeeRoutes = require("./routes/categoryRoutes");
+const userRoutes = require("./routes/userRoutes");
+const categoryRoutes = require("./routes/categoryRoutes");
 const productsRoutes = require("./routes/productsRoutes");
 
 require("dotenv").config();
@@ -20,10 +20,10 @@ mongoose
   .catch((err) => console.log(err));
 
 // app.use(routes);
-app.use("/api/v1", authRoutes);
-app.use("/api/v1", adminRoutes);
-app.use("/api/v1", employeeRoutes);
-app.use("/api/v1", productsRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/category", categoryRoutes);
+app.use("/api/products", productsRoutes);
 
 app.use(globalErrorHandler);
 

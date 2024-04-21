@@ -12,6 +12,70 @@ exports.getProducts = async (req, res) => {
     res.status(500).json({ msg: "unable to get product data" });
   }
 };
+
+// exports.getProductSearch = async (req, res) => {
+//   const {
+//     email,
+//     searchValue,
+//     role,
+//     currentPage,
+//     itemsPerPage,
+//     status,
+//     branch,
+//   } = req.query;
+//   try {
+//     let query = {};
+//     if (role === "employee") {
+//       if (!email) {
+//         return res
+//           .status(400)
+//           .json({ message: "Missing email for employee role" });
+//       }
+//       query.email = email;
+//     } else if (role === "admin") {
+//       query = {};
+//     } else {
+//       return res.status(400).json({ message: "Invalid user" });
+//     }
+
+//     if (searchValue && searchValue.trim() !== " ") {
+//       query.$or = [{ productCode: searchValue }];
+//     }
+//     if (searchValue && searchValue.trim() !== " ") {
+//       query.$or = [{ category: searchValue }];
+//     }
+
+//     if (status) {
+//       query.status = status;
+//     }
+//     if (branch) {
+//       query.branch = branch;
+//     }
+
+//     const skip = currentPage * itemsPerPage;
+
+//     const items = await productsDB
+//       .find(query)
+//       .skip(skip)
+//       .limit(itemsPerPage)
+//       .sort({ deliveryDate: -1 });
+
+//     if (!items || items.length === 0) {
+//       return res.status(404).json({
+//         message: "No items found for the given email and search term",
+//       });
+//     }
+//     // Total number of blogs
+//     const totalCount = await productsDB.countDocuments(query);
+//     res.status(200).json({ items, totalCount });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({
+//       message: "Error occurred while searching for items",
+//     });
+//   }
+// };
+
 exports.getProductSearch = async (req, res) => {
   const {
     email,
@@ -24,6 +88,7 @@ exports.getProductSearch = async (req, res) => {
   } = req.query;
   try {
     let query = {};
+
     if (role === "employee") {
       if (!email) {
         return res
@@ -32,23 +97,34 @@ exports.getProductSearch = async (req, res) => {
       }
       query.email = email;
     } else if (role === "admin") {
-      query = {};
     } else {
       return res.status(400).json({ message: "Invalid user" });
     }
 
-    if (searchValue && searchValue.trim() !== " ") {
-      query.$or = [{ productCode: searchValue }];
+    if (searchValue && searchValue.trim() !== "") {
+      query.$or = [{ productCode: searchValue }, { category: searchValue }];
     }
 
     if (status) {
       query.status = status;
     }
+    if (branch) {
+      query.branch = branch;
+    }
 
     const skip = currentPage * itemsPerPage;
 
+    const projection = {
+      _id: 0,
+      productCode: 1,
+      category: 1,
+      deliveryDate: 1,
+      status: 1,
+      branch: 1,
+    };
+
     const items = await productsDB
-      .find(query)
+      .find(query, projection)
       .skip(skip)
       .limit(itemsPerPage)
       .sort({ deliveryDate: -1 });
@@ -58,7 +134,6 @@ exports.getProductSearch = async (req, res) => {
         message: "No items found for the given email and search term",
       });
     }
-    // Total number of blogs
     const totalCount = await productsDB.countDocuments(query);
     res.status(200).json({ items, totalCount });
   } catch (error) {
@@ -68,6 +143,7 @@ exports.getProductSearch = async (req, res) => {
     });
   }
 };
+
 exports.getProductFilter = async (req, res) => {
   const { filterName } = req.query;
 
@@ -115,6 +191,7 @@ exports.getProductFilter = async (req, res) => {
     res.status(500).json({ message: "Error retrieving sell products" });
   }
 };
+
 exports.addProduct = async (req, res) => {
   try {
     const data = req.body;
@@ -133,6 +210,7 @@ exports.addProduct = async (req, res) => {
     }
   }
 };
+
 exports.deleteProduct = async (req, res) => {
   try {
     const { productId } = req.params;
@@ -150,6 +228,7 @@ exports.deleteProduct = async (req, res) => {
     res.status(500).json({ message: "An error occurred" });
   }
 };
+
 exports.updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
