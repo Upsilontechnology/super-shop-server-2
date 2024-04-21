@@ -7,8 +7,8 @@ const {
 
 const router = require("express").Router();
 
-router.get("/users", getAllUser);
-router.get("/allUsers", getAllUser);
+router.get("/", getAllUser);
+router.get("/all", getAllUser);
 router.post("/", saveUser);
 router.patch("/setAdminRole/:id", setAdmin);
 router.patch("/setEmployeeRole/:id", setEmployee);

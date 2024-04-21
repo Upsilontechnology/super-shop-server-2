@@ -8,11 +8,11 @@ const {
   getProductFilter,
 } = require("../../controllers/productController");
 
-router.get("/products", getProducts);
-router.get("/products/search", getProductSearch);
-router.get("/products/filter", getProductFilter);
-router.post("/products", addProduct);
-router.put("/products/:id", updateProduct);
-router.delete("/products/:id", deleteProduct);
+router.get("/", getProducts);
+router.get("/search", getProductSearch);
+router.get("/filter", getProductFilter);
+router.post("/", addProduct);
+router.put("/:id", updateProduct);
+router.delete("/:id", deleteProduct);
 
 module.exports = router;
