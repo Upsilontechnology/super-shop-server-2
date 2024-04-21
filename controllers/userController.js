@@ -17,13 +17,14 @@ exports.getAllUser = async (req, res) => {
 exports.saveUser = async (req, res) => {
   try {
     const user = req.body;
+    console.log(user);
     const query = await userDB.findOne({ email: user.email });
     if (query) {
       return res
         .status(200)
         .json({ message: "User already exists", success: false });
     }
-    const newUser = new User(user);
+    const newUser = new userDB(user);
     await newUser.save();
     res.status(201).send({ message: "added successfully ", success: true });
   } catch (error) {

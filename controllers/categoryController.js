@@ -10,6 +10,7 @@ exports.getCategory = async (req, res) => {
     res.status(500).json({ msg: "unable to get user data" });
   }
 };
+
 exports.addCategory = async (req, res) => {
   try {
     const data = req.body;
@@ -22,15 +23,16 @@ exports.addCategory = async (req, res) => {
         .json({ message: "Category has already been added" });
     }
 
-    const newCategory = new Category(data);
+    const newCategory = new categoryDB(data);
     await newCategory.save();
 
-    res.status(201).json({ message: "Category created successfully" });
+    res.status(201).json({ message: "success" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "An error occurred" });
   }
 };
+
 exports.deleteCategory = async (req, res) => {
   try {
     const { categoryId } = req.params;
@@ -42,12 +44,13 @@ exports.deleteCategory = async (req, res) => {
       return res.status(404).json({ message: "Category not found" });
     }
 
-    res.status(200).json({ message: "Category deleted successfully" });
+    res.status(200).json({ message: "success" });
   } catch (err) {
     console.error("Error deleting category:", err);
     res.status(500).json({ message: "An error occurred" }); // Generic message for security
   }
 };
+
 exports.updateCategory = async (req, res) => {
   try {
     const { id } = req.params;

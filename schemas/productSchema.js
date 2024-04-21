@@ -41,7 +41,7 @@ const productSchema = mongoose.Schema({
     type: String,
     require: true,
   },
-  branchName: {
+  branch: {
     type: String,
     require: true,
   },

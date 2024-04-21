@@ -7,10 +7,10 @@ const {
 } = require("../../controllers/categoryController");
 
 //category route
-router.get("/category", getCategory);
-router.post("/category", addCategory);
-router.delete("/category/:id", deleteCategory);
-router.put("/category/:id", updateCategory);
+router.get("/", getCategory);
+router.post("/", addCategory);
+router.delete("/:categoryId", deleteCategory);
+router.put("/:id", updateCategory);
 
 // product route
 
