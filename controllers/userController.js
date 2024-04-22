@@ -5,15 +5,41 @@ const userDB = new mongoose.model("User", userSchema);
 
 //get all user
 exports.getAllUser = async (req, res) => {
+  const { currentPage, itemsPerPage } = req.query;
   try {
-    const result = await userDB.find();
-    res.send(result);
+    const skip = currentPage * itemsPerPage;
+    const items = await userDB.find().skip(skip).limit(itemsPerPage);
+
+    if (!items || items.length === 0) {
+      return res.status(404).json({
+        message: "No items found",
+      });
+    }
+    const totalCount = await userDB.countDocuments();
+
+    res.status(200).json({ items, totalCount });
   } catch (error) {
-    res.status(500).json({ msg: "unable to get user data" });
+    console.log(error);
+    res.status(500).json({
+      message: "Error occurred while fetching items",
+    });
   }
 };
 
-//saveUser
+//get single User
+exports.getUser = async (req, res) => {
+  try {
+    const email = req.params.email;
+    const result = await userDB.findOne({ email: email });
+    console.log(result);
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: "unable to get single user data" });
+  }
+};
+
+//save new user
 exports.saveUser = async (req, res) => {
   try {
     const user = req.body;
