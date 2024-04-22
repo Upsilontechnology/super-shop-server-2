@@ -9,6 +9,9 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  branch: {
+    type: String,
+  },
   role: String,
   image: String,
   date: {

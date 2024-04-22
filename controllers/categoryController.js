@@ -2,12 +2,33 @@ const { default: mongoose } = require("mongoose");
 const categorySchema = require("../schemas/categorySchema");
 const categoryDB = new mongoose.model("Category", categorySchema);
 
+// exports.getCategory = async (req, res) => {
+//   try {
+//     const result = await categoryDB.find();
+//     res.send(result);
+//   } catch (error) {
+//     res.status(500).json({ msg: "unable to get user data" });
+//   }
+// };
 exports.getCategory = async (req, res) => {
+  const { currentPage, itemsPerPage } = req.query;
   try {
-    const result = await categoryDB.find();
-    res.send(result);
+    const skip = currentPage * itemsPerPage;
+    const items = await categoryDB.find().skip(skip).limit(itemsPerPage);
+
+    if (!items || items.length === 0) {
+      return res.status(404).json({
+        message: "No items found",
+      });
+    }
+    const totalCount = await categoryDB.countDocuments();
+
+    res.status(200).json({ items, totalCount });
   } catch (error) {
-    res.status(500).json({ msg: "unable to get user data" });
+    console.log(error);
+    res.status(500).json({
+      message: "Error occurred while fetching items",
+    });
   }
 };
 
