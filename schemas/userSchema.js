@@ -9,11 +9,9 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  branch: {
-    type: String,
-  },
   role: String,
-  image: String,
+  branch: String,
+  status: String,
   date: {
     type: Date,
     default: Date.now,
