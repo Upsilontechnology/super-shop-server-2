@@ -116,3 +116,31 @@ exports.setEmployee = async (req, res) => {
     });
   }
 };
+
+//cheak Admin Rule
+exports.cheakAdmin = async (req, res) => {
+  const email = req.params.email;
+  if (email !== req.decoded.email) {
+    return res.status(403).send({ message: "forbidden access" });
+  }
+  const query = { email: email };
+  const user = await userDB.findOne(query);
+
+  const isAdmin = user?.role === "Admin" ? true : false;
+
+  res.send({ isAdmin });
+};
+
+//cheak Employee Rule
+exports.cheakEmployee = async (req, res) => {
+  const email = req.params.email;
+  if (email !== req.decoded.email) {
+    return res.status(403).send({ message: "forbidden access" });
+  }
+  const query = { email: email };
+  const user = await userDB.findOne(query);
+
+  const isEmployee = user?.role === "Employee" ? true : false;
+
+  res.send({ isEmployee });
+};
