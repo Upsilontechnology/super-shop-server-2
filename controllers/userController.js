@@ -35,7 +35,7 @@ exports.getUser = async (req, res) => {
   try {
     const email = req.params.email;
     const result = await userDB.findOne({ email: email });
-    console.log(result);
+    // console.log(result);
     res.send(result);
   } catch (error) {
     console.log(error);
@@ -47,7 +47,7 @@ exports.getUser = async (req, res) => {
 exports.saveUser = async (req, res) => {
   try {
     const user = req.body;
-    console.log(user);
+    // console.log(user);
     const query = await userDB.findOne({ email: user.email });
     if (query) {
       return res
@@ -75,7 +75,7 @@ exports.setAdmin = async (req, res) => {
       status: status,
     },
   };
-  console.log(filter, id, branch, role);
+  // console.log(filter, id, branch, role);
   try {
     const result = await userDB.updateOne(filter, updatedDoc);
 
@@ -107,7 +107,7 @@ exports.setEmployee = async (req, res) => {
       status: status,
     },
   };
-  console.log(filter, id, branch, role);
+  // console.log(filter, id, branch, role);
   try {
     const result = await userDB.updateOne(filter, updatedDoc);
 
@@ -174,6 +174,35 @@ exports.deleteUser = async (req, res) => {
     res.status(400).send({
       message: "Document not found or not modified",
       success: false,
+    });
+  }
+};
+
+//change branch
+exports.changeBranch = async (req, res) => {
+  const { id } = req.params;
+  const filter = { _id: new Object(id) };
+  const { branch } = req.body;
+  console.log(branch);
+  const updatedDoc = {
+    $set: {
+      branch: branch,
+    },
+  };
+  try {
+    const result = await userDB.updateOne(filter, updatedDoc);
+    if (result.modifiedCount === 1) {
+      res.status(201).send({
+        message: "User role updated successfully",
+        success: true,
+        modifiedCount: result.modifiedCount,
+      });
+    }
+  } catch (error) {
+    res.status(400).send({
+      message: "Document not found or not modified",
+      success: false,
+      modifiedCount: result.modifiedCount,
     });
   }
 };

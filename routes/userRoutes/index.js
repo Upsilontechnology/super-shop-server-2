@@ -7,6 +7,7 @@ const {
   cheakAdmin,
   cheakEmployee,
   deleteUser,
+  changeBranch,
 } = require("../../controllers/userController");
 const { verifyToken } = require("../../middlewares/verifyToken");
 
@@ -20,5 +21,7 @@ router.patch("/setEmployeeRole/:id", setEmployee);
 router.get("/admin/:email", verifyToken, cheakAdmin);
 router.get("/employee/:email", verifyToken, cheakEmployee);
 router.delete("/:id", deleteUser);
+
+router.patch("/changebranch/:id", changeBranch);
 
 module.exports = router;
