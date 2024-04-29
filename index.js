@@ -24,7 +24,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/products", productsRoutes);
-
+// /products/search
 app.use(globalErrorHandler);
 
 app.get("/health", (req, res) => {

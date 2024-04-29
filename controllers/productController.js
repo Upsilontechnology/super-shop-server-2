@@ -76,6 +76,7 @@ exports.getProducts = async (req, res) => {
 //   }
 // };
 
+//product search
 exports.getProductSearch = async (req, res) => {
   const {
     email,
@@ -191,7 +192,7 @@ exports.getProductFilter = async (req, res) => {
     res.status(500).json({ message: "Error retrieving sell products" });
   }
 };
-
+//add product
 exports.addProduct = async (req, res) => {
   try {
     const data = req.body;
@@ -210,7 +211,7 @@ exports.addProduct = async (req, res) => {
     }
   }
 };
-
+//delete product
 exports.deleteProduct = async (req, res) => {
   try {
     const { productId } = req.params;
@@ -228,7 +229,7 @@ exports.deleteProduct = async (req, res) => {
     res.status(500).json({ message: "An error occurred" });
   }
 };
-
+//update product
 exports.updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
