@@ -6,9 +6,11 @@ const {
   getProducts,
   getProductSearch,
   getProductFilter,
+  getSingleProduct,
 } = require("../../controllers/productController");
 
 router.get("/", getProducts);
+router.get("/:id", getSingleProduct);
 router.get("/search", getProductSearch);
 router.get("/filter", getProductFilter);
 router.post("/", addProduct);

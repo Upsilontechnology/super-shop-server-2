@@ -160,9 +160,9 @@ exports.deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
     const query = { _id: new Object(id) };
-    console.log(query);
+
     const result = await userDB.deleteOne(query);
-    console.log(result);
+
     if (result.deletedCount === 1) {
       res.status(201).send({
         message: "User deleted successfully",

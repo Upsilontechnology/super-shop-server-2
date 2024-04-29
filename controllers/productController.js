@@ -13,6 +13,17 @@ exports.getProducts = async (req, res) => {
   }
 };
 
+exports.getSingleProduct = async (req, res) => {
+  const { id } = req.params;
+  const query = { _id: new Object(id) }
+  try {
+    const result = await productsDB.find(query);
+    res.send(result);
+  } catch (error) {
+    res.status(500).json({ msg: "unable to get product data" });
+  }
+};
+
 // exports.getProductSearch = async (req, res) => {
 //   const {
 //     email,
@@ -196,6 +207,11 @@ exports.getProductFilter = async (req, res) => {
 exports.addProduct = async (req, res) => {
   try {
     const data = req.body;
+    const query = { productCode: data?.productCode }
+    const existingProductCode = await productsDB.findOne(query)
+    if (existingProductCode) {
+      return res.json({ message: 'Product Code has alredy taken' })
+    }
     const productsData = new productsDB(data);
     await productsData.save().then(() => {
       res.status(200).json({
@@ -214,18 +230,20 @@ exports.addProduct = async (req, res) => {
 //delete product
 exports.deleteProduct = async (req, res) => {
   try {
-    const { productId } = req.params;
-    const query = { _id: new Object(productId) };
+    const { id } = req.params;
+    const query = { _id: new Object(id) };
 
-    const deletedCount = await productsDB.deleteOne(query);
-
-    if (deletedCount.deletedCount === 0) {
-      return res.status(404).json({ message: "Category not found" });
+    const result = await productsDB.deleteOne(query);
+    if (result.deletedCount === 1) {
+      res.status(201).send({
+        message: "Product deleted successfully",
+        success: true,
+        deletedCount: result.deletedCount,
+      });
     }
 
-    res.status(200).json({ message: "Category deleted successfully" });
   } catch (err) {
-    console.error("Error deleting category:", err);
+    console.error("Error deleting product:", err);
     res.status(500).json({ message: "An error occurred" });
   }
 };
