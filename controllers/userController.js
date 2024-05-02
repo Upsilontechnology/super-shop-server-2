@@ -42,6 +42,61 @@ exports.getUser = async (req, res) => {
     res.status(500).json({ msg: "unable to get single user data" });
   }
 };
+//get ROle
+exports.getRole = async (req, res) => {
+  try {
+    const email = req.params.email;
+    const user = await userDB.findOne({ email });
+
+    if (user) {
+      const role = user.role;
+      res.send({ role });
+    } else {
+      res.status(404).json({ msg: "User not found" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: "Unable to get user data" });
+  }
+};
+
+//get role and branch
+// exports.getRoleAndBranch = async (req, res) => {
+//   try {
+//     const email = req.params.email;
+//     const user = await userDB.findOne({ email });
+
+//     if (user) {
+//       const { role, branch } = user;
+//       res.send({ role, branch });
+//     } else {
+//       res.status(404).json({ msg: "User not found" });
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ msg: "Unable to get user data" });
+//   }
+// };
+
+exports.getRoleAndBranch = async (req, res) => {
+  try {
+    const email = req.params.email;
+    const user = await userDB.findOne(
+      { email },
+      { role: 1, branch: 1, _id: 0 }
+    );
+
+    if (user) {
+      const { role, branch } = user;
+      res.send({ role, branch });
+    } else {
+      res.status(404).json({ msg: "User not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Unable to get user data" });
+  }
+};
 
 //save new user
 exports.saveUser = async (req, res) => {

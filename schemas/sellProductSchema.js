@@ -1,15 +1,11 @@
 const mongoose = require("mongoose");
 
-const productSchema = mongoose.Schema({
+const sellProductSchema = mongoose.Schema({
   productName: {
     type: String,
     require: true,
   },
   productCode: {
-    type: Number,
-    require: true,
-  },
-  unit: {
     type: Number,
     require: true,
   },
@@ -21,16 +17,12 @@ const productSchema = mongoose.Schema({
     type: String,
     require: true,
   },
-  purchaseprice: {
+  price: {
     type: Number,
     require: true,
   },
-  sellprice: {
+  total: {
     type: Number,
-    require: true,
-  },
-  supplierName: {
-    type: String,
     require: true,
   },
   sellingDate: {
@@ -44,6 +36,10 @@ const productSchema = mongoose.Schema({
     type: String,
     require: true,
   },
+  status: {
+    type: String,
+    require: true,
+  },
 });
 
-module.exports = productSchema;
+module.exports = sellProductSchema;
