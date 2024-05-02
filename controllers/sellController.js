@@ -24,11 +24,17 @@ exports.getSellProduct = async (req, res) => {
   try {
     const { email, role, currentPage, itemsPerPage, status, branch } =
       req.query;
+    let query = {};
 
     if (!["Employee"].includes(role)) {
       return res.status(400).json({ message: "Invalid user role" });
     }
-    const query = {};
+
+    if (status === 'approved') {
+      query.status = status
+    } else if (status === 'pending') {
+      query.status = status
+    }
 
     if (role === "Employee") {
       if (!email) {
@@ -39,24 +45,18 @@ exports.getSellProduct = async (req, res) => {
       query.email = email;
     }
 
-    if (status) {
-      query.status = status;
-    }
-
     if (branch) {
       query.branch = branch;
     }
 
-    let skip = 0;
-    if (currentPage && itemsPerPage) {
-      skip = parseInt(currentPage) * parseInt(itemsPerPage);
-    }
+    // let skip = 0;
+    // if (currentPage && itemsPerPage) {
+    //   skip = parseInt(currentPage) * parseInt(itemsPerPage);
+    // }
 
     const [items, totalCount] = await Promise.all([
       sellProductsDB
         .find(query)
-        .skip(skip)
-        .limit(parseInt(itemsPerPage))
         .sort({ deliveryDate: -1 }),
       sellProductsDB.countDocuments(query),
     ]);
@@ -67,6 +67,74 @@ exports.getSellProduct = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error occurred while searching for items" });
+  }
+};
+
+// get data by filter
+exports.getSellProductFilter = async (req, res) => {
+
+  try {
+    const { role, email, filterName, branch, status } = req.query;
+    let query = {};
+    // console.log(role, email, filterName, status);
+    if (status === 'approved') {
+      query.status = status
+    }
+    if (role === "Admin") {
+      query = { branch: branch };
+    } else if (role === "Employee") {
+      if (!email) {
+        return res
+          .status(400)
+          .json({ message: "Missing email for employee role" });
+      }
+      query = { email, branch: branch };
+    } else {
+      return res.status(400).json({ message: "Invalid user role" });
+    }
+    // console.log(query)
+    // if (status === 'approved') {
+    //   query.status = status
+    // }
+    if (filterName === "daily") {
+      const startDate = new Date();
+      startDate.setHours(0, 0, 0, 0);
+      const endDate = new Date();
+      endDate.setHours(23, 59, 59, 999);
+      query.sellingDate = { $gte: startDate, $lte: endDate };
+    } else if (filterName === "weekly") {
+      const startDate = new Date();
+      startDate.setHours(0, 0, 0, 0);
+      const endDate = new Date();
+      endDate.setDate(endDate.getDate() + (7 - endDate.getDay()));
+      endDate.setHours(23, 59, 59, 999);
+      query.sellingDate = { $gte: startDate, $lte: endDate };
+    } else if (filterName === "monthly") {
+      const startDate = new Date();
+      startDate.setDate(1);
+      startDate.setHours(0, 0, 0, 0);
+      const endDate = new Date(startDate);
+      endDate.setMonth(endDate.getMonth() + 1);
+      endDate.setDate(0);
+      endDate.setHours(23, 59, 59, 999);
+      query.sellingDate = { $gte: startDate, $lte: endDate };
+    } else if (filterName === "yearly") {
+      const startDate = new Date();
+      startDate.setMonth(0);
+      startDate.setDate(1);
+      startDate.setHours(0, 0, 0, 0);
+      const endDate = new Date(startDate);
+      endDate.setFullYear(endDate.getFullYear() + 1);
+      endDate.setDate(0);
+      endDate.setHours(23, 59, 59, 999);
+      query.sellingDate = { $gte: startDate, $lte: endDate };
+    }
+
+    const data = await sellProductsDB.find(query);
+    res.json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error retrieving sell products" });
   }
 };
 

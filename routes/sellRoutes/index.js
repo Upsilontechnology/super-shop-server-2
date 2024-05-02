@@ -6,12 +6,14 @@ const {
   deleteSellProduct,
   getSellSingleProduct,
   updateSoldProductStatus,
+  getSellProductFilter,
 } = require("../../controllers/sellController");
 
 const router = require("express").Router();
 
 router.post("/", addSellProduct);
 router.get("/", getSellProduct);
+router.get("/filter", getSellProductFilter);
 router.get("/:id", getSellSingleProduct);
 router.delete("/:id", deleteSellProduct);
 router.put("/:id", updateSellProduct);
