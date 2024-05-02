@@ -25,15 +25,14 @@ exports.getSellProduct = async (req, res) => {
     const { email, role, currentPage, itemsPerPage, status, branch } =
       req.query;
     let query = {};
-
     if (!["Employee"].includes(role)) {
       return res.status(400).json({ message: "Invalid user role" });
     }
 
-    if (status === 'approved') {
-      query.status = status
-    } else if (status === 'pending') {
-      query.status = status
+    if (status === "approved") {
+      query.status = status;
+    } else if (status === "pending") {
+      query.status = status;
     }
 
     if (role === "Employee") {
@@ -49,15 +48,18 @@ exports.getSellProduct = async (req, res) => {
       query.branch = branch;
     }
 
-    // let skip = 0;
-    // if (currentPage && itemsPerPage) {
-    //   skip = parseInt(currentPage) * parseInt(itemsPerPage);
-    // }
+    let skip = 0;
+    if (currentPage && itemsPerPage) {
+      skip = parseInt(currentPage) * parseInt(itemsPerPage);
+      // console.log(skip);
+    }
 
     const [items, totalCount] = await Promise.all([
       sellProductsDB
         .find(query)
-        .sort({ deliveryDate: -1 }),
+        .skip(skip)
+        .sort({ deliveryDate: -1 })
+        .limit(itemsPerPage),
       sellProductsDB.countDocuments(query),
     ]);
 
@@ -72,14 +74,14 @@ exports.getSellProduct = async (req, res) => {
 
 // get data by filter
 exports.getSellProductFilter = async (req, res) => {
-
   try {
-    const { role, email, filterName, branch, status } = req.query;
+    const { role, email, filterName, branch, status, category } = req.query;
     let query = {};
     // console.log(role, email, filterName, status);
-    if (status === 'approved') {
-      query.status = status
+    if (status === "approved") {
+      query.status = status;
     }
+
     if (role === "Admin") {
       query = { branch: branch };
     } else if (role === "Employee") {
@@ -93,9 +95,10 @@ exports.getSellProductFilter = async (req, res) => {
       return res.status(400).json({ message: "Invalid user role" });
     }
     // console.log(query)
-    // if (status === 'approved') {
-    //   query.status = status
-    // }
+    if (category) {
+      query.category = category;
+    }
+    // console.log(category);
     if (filterName === "daily") {
       const startDate = new Date();
       startDate.setHours(0, 0, 0, 0);
