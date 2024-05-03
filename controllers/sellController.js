@@ -25,23 +25,22 @@ exports.getSellProduct = async (req, res) => {
     const { email, role, currentPage, itemsPerPage, status, branch } =
       req.query;
     let query = {};
-    if (!["Employee"].includes(role)) {
-      return res.status(400).json({ message: "Invalid user role" });
-    }
-
-    if (status === "approved") {
-      query.status = status;
-    } else if (status === "pending") {
-      query.status = status;
-    }
-
-    if (role === "Employee") {
+    if (role === "Admin") {
+      query = { branch: branch };
+    } else if (role === "Employee") {
       if (!email) {
         return res
           .status(400)
           .json({ message: "Missing email for employee role" });
       }
-      query.email = email;
+      query = { email, branch: branch };
+    } else {
+      return res.status(400).json({ message: "Invalid user role" });
+    }
+    if (status === "approved") {
+      query.status = status;
+    } else if (status === "pending") {
+      query.status = status;
     }
 
     if (branch) {
@@ -76,10 +75,12 @@ exports.getSellProduct = async (req, res) => {
 exports.getSellProductFilter = async (req, res) => {
   try {
     const { role, email, filterName, branch, status, category } = req.query;
+    // console.log(req.query);
     let query = {};
     // console.log(role, email, filterName, status);
     if (status === "approved") {
       query.status = status;
+      console.log(status);
     }
 
     if (role === "Admin") {
@@ -98,7 +99,7 @@ exports.getSellProductFilter = async (req, res) => {
     if (category) {
       query.category = category;
     }
-    // console.log(category);
+    // console.log(query);
     if (filterName === "daily") {
       const startDate = new Date();
       startDate.setHours(0, 0, 0, 0);
