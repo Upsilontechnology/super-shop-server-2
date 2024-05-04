@@ -473,7 +473,7 @@ exports.getProductStatistics = async (req, res) => {
 exports.updateSoldProducts = async (req, res) => {
   try {
     const { items } = req.body;
-    // console.log(items);
+    console.log(items);
 
     const negativeQuantity = items.some((item) => item.quantity < 0);
     if (negativeQuantity) {
@@ -484,7 +484,7 @@ exports.updateSoldProducts = async (req, res) => {
 
     const productCodes = items.map((item) => item.code);
     const quantities = items.map((item) => item.quantity);
-
+    // console.log(productCodes, quantities);
     const products = await productsDB.find({
       productCode: { $in: productCodes },
     });
