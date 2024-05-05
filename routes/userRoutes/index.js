@@ -17,7 +17,7 @@ const router = require("express").Router();
 
 router.get("/", getAllUser);
 router.get("/:email", getUser);
-// router.get("/role/:email", getRole);
+router.get("/role/:email", getRole);
 router.get("/roleAndbranch/:email", getRoleAndBranch);
 router.post("/", saveUser);
 router.patch("/setAdminRole/:id", setAdmin);

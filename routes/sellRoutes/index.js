@@ -13,7 +13,7 @@ const router = require("express").Router();
 
 router.post("/", addSellProduct);
 router.get("/", getSellProduct);
-router.get("/notification", getSellProduct);
+// router.get("/notification", getSellProduct);
 router.get("/filter", getSellProductFilter);
 router.get("/category", getSellProductFilter);
 router.get("/:id", getSellSingleProduct);
