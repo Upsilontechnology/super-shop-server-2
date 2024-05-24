@@ -75,14 +75,17 @@ exports.getSellProduct = async (req, res) => {
 exports.getSellProductFilter = async (req, res) => {
   try {
     const { role, email, filterName, branch, status, category } = req.query;
-    // console.log(req.query);
+    console.log(category);
+    console.log(filterName);
     let query = {};
     // console.log(role, email, filterName, status);
     if (status === "approved") {
       query.status = status;
-      console.log(status);
+      // console.log(status);
     }
-
+    if (category) {
+      query.category = category;
+    }
     if (role === "Admin") {
       query = { branch: branch };
     } else if (role === "Employee") {
@@ -96,9 +99,7 @@ exports.getSellProductFilter = async (req, res) => {
       return res.status(400).json({ message: "Invalid user role" });
     }
     // console.log(query)
-    if (category) {
-      query.category = category;
-    }
+
     // console.log(query);
     if (filterName === "daily") {
       const startDate = new Date();
@@ -141,6 +142,68 @@ exports.getSellProductFilter = async (req, res) => {
     res.status(500).json({ message: "Error retrieving sell products" });
   }
 };
+// exports.getSellProductFilter = async (req, res) => {
+//   try {
+//     const { role, email, filterName, branch, status, category } = req.query;
+//     let query = {};
+
+//     if (status === "approved") {
+//       query.status = status;
+//     }
+
+//     if (role === "Admin") {
+//       query.branch = branch;
+//     } else if (role === "Employee") {
+//       if (!email) {
+//         return res
+//           .status(400)
+//           .json({ message: "Missing email for employee role" });
+//       }
+//       query.email = email;
+//       query.branch = branch;
+//     } else {
+//       return res.status(400).json({ message: "Invalid user role" });
+//     }
+
+//     if (category) {
+//       query.category = category;
+//     }
+
+//     const startDate = new Date();
+//     startDate.setHours(0, 0, 0, 0);
+
+//     let endDate = new Date();
+
+//     switch (filterName) {
+//       case "daily":
+//         endDate.setHours(23, 59, 59, 999);
+//         break;
+//       case "weekly":
+//         endDate.setDate(endDate.getDate() + (7 - endDate.getDay()));
+//         endDate.setHours(23, 59, 59, 999);
+//         break;
+//       case "monthly":
+//         endDate.setDate(0);
+//         endDate.setHours(23, 59, 59, 999);
+//         break;
+//       case "yearly":
+//         endDate.setMonth(11);
+//         endDate.setDate(31);
+//         endDate.setHours(23, 59, 59, 999);
+//         break;
+//       default:
+//         return res.status(400).json({ message: "Invalid filter name" });
+//     }
+
+//     query.sellingDate = { $gte: startDate, $lte: endDate };
+
+//     const data = await sellProductsDB.find(query);
+//     res.json(data);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Error retrieving sell products" });
+//   }
+// };
 
 exports.getSellSingleProduct = async (req, res) => {
   const { id } = req.params;
