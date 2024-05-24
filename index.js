@@ -7,6 +7,7 @@ const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const productsRoutes = require("./routes/productsRoutes");
+const sellRoutes = require("./routes/sellRoutes");
 
 require("dotenv").config();
 const app = express();
@@ -24,7 +25,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/products", productsRoutes);
-
+app.use("/api/sellProducts", sellRoutes);
+// /products/search
 app.use(globalErrorHandler);
 
 app.get("/health", (req, res) => {
