@@ -5,7 +5,7 @@ const express = require("express");
 const applyMiddleware = (app) => {
   app.use(
     cors({
-      origin: ["https://supershop.abmgloballtd.com", "https://supershop.abmgloballtd.com"],
+      origin: ["http://localhost:5173", "http://localhost:5173"],
       credentials: true,
       optionSuccessStatus: 200,
     })
