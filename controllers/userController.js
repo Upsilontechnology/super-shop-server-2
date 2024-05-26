@@ -14,11 +14,11 @@ exports.getAllUser = async (req, res) => {
     const skip = currentPage * itemsPerPage;
     const items = await userDB.find(query).skip(skip).limit(itemsPerPage);
 
-    if (!items || items.length === 0) {
-      return res.status(404).json({
-        message: "No items found",
-      });
-    }
+    // if (!items || items.length === 0) {
+    //   return res.status(404).json({
+    //     message: "No items found",
+    //   });
+    // }
     const totalCount = await userDB.countDocuments();
 
     res.status(200).json({ items, totalCount });
