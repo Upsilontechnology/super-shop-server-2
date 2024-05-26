@@ -399,6 +399,66 @@ exports.updateProduct = async (req, res) => {
 //   }
 // };
 
+// exports.getProductStatistics = async (req, res) => {
+//   try {
+//     const { role, email } = req.query;
+//     let query = {};
+//     // console.log(role, email);
+//     if (role === "Admin") {
+//       query = { branch: req.query.branch };
+//     } else if (role === "Employee") {
+//       if (!email) {
+//         return res
+//           .status(400)
+//           .json({ message: "Missing email for employee role" });
+//       }
+//       query = { email, branch: req.query.branch };
+//     } else {
+//       return res.status(400).json({ message: "Invalid user role" });
+//     }
+
+//     const statistics = await productsDB.aggregate([
+//       { $match: query },
+//       {
+//         $group: {
+//           _id: null,
+//           totalQuantity: { $sum: "$quantity" },
+//           totalSellAmount: { $sum: "$sellprice" },
+//           totalPurchaseAmount: { $sum: "$purchaseprice" },
+//         },
+//       },
+//       {
+//         $project: {
+//           totalProducts: "$totalQuantity",
+//           totalSellAmount: 1,
+//           totalPurchaseAmount: 1,
+//         },
+//       },
+//     ]);
+
+//     const allCategories = await productsDB.distinct("category");
+
+//     const result =
+//       statistics.length > 0
+//         ? statistics[0]
+//         : {
+//             totalProducts: 0,
+//             totalSellAmount: 0,
+//             totalPurchaseAmount: 0,
+//           };
+
+//     result.allCategories = allCategories.length;
+
+//     res.status(200).json(result);
+//   } catch (error) {
+//     console.error(error);
+//     res
+//       .status(500)
+//       .json({ message: "Error occurred while fetching product statistics" });
+//   }
+// };
+
+
 exports.getProductStatistics = async (req, res) => {
   try {
     const { role, email } = req.query;
@@ -424,7 +484,7 @@ exports.getProductStatistics = async (req, res) => {
           _id: null,
           totalQuantity: { $sum: "$quantity" },
           totalSellAmount: { $sum: "$sellprice" },
-          totalPurchaseAmount: { $sum: "$purchaseprice" },
+          totalPurchaseAmount: { $sum: { $multiply: ["$quantity", "$purchaseprice"] } }, // Multiply quantity with purchase price
         },
       },
       {
@@ -442,10 +502,10 @@ exports.getProductStatistics = async (req, res) => {
       statistics.length > 0
         ? statistics[0]
         : {
-            totalProducts: 0,
-            totalSellAmount: 0,
-            totalPurchaseAmount: 0,
-          };
+          totalProducts: 0,
+          totalSellAmount: 0,
+          totalPurchaseAmount: 0,
+        };
 
     result.allCategories = allCategories.length;
 
@@ -457,6 +517,14 @@ exports.getProductStatistics = async (req, res) => {
       .json({ message: "Error occurred while fetching product statistics" });
   }
 };
+
+
+
+
+
+
+
+
 
 // exports.updateSoldProducts = async (req, res) => {
 //   const { items } = req.body;
