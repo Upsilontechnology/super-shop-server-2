@@ -10,7 +10,7 @@ const verifyEmployee = async (req, res, next) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    req.isEmployee = user.role === "employee";
+    req.isEmployee = user.role === "Employee";
     next();
   } catch (error) {
     console.error("Error in verifyEmployee middleware:", error);
