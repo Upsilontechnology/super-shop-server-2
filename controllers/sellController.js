@@ -70,17 +70,52 @@ exports.getSellProduct = async (req, res) => {
       .json({ message: "Error occurred while searching for items" });
   }
 };
+// get data by category
+exports.getSellProductCategory = async (req, res) => {
+  try {
+    const { role, email, branch, status, category } = req.query;
+    // console.log(branch);
+    // console.log(req.query);
+    let query = {};
 
+    if (status === "approved") {
+      query.status = status;
+    }
+
+    if (role === "Admin") {
+      query = { branch: branch };
+    } else if (role === "Employee") {
+      if (!email) {
+        return res
+          .status(400)
+          .json({ message: "Missing email for employee role" });
+      }
+      query = { email, branch: branch };
+    } else {
+      return res.status(400).json({ message: "Invalid user role" });
+    }
+    // console.log(query)
+    if (category) {
+      query.category = category;
+    }
+
+    const data = await sellProductsDB.find(query);
+    // console.log('category console', data);
+    res.json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error retrieving sell products" });
+  }
+};
 // get data by filter
 exports.getSellProductFilter = async (req, res) => {
   try {
     const { role, email, filterName, branch, status, category } = req.query;
-    // console.log(req.query);
+    // console.log('clicked');
     let query = {};
-    // console.log(role, email, filterName, status);
+
     if (status === "approved") {
       query.status = status;
-      console.log(status);
     }
 
     if (role === "Admin") {
@@ -133,8 +168,8 @@ exports.getSellProductFilter = async (req, res) => {
       endDate.setHours(23, 59, 59, 999);
       query.sellingDate = { $gte: startDate, $lte: endDate };
     }
-
     const data = await sellProductsDB.find(query);
+    console.log('filter console', data);
     res.json(data);
   } catch (error) {
     console.error(error);

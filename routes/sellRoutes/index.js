@@ -7,6 +7,7 @@ const {
   getSellSingleProduct,
   updateSoldProductStatus,
   getSellProductFilter,
+  getSellProductCategory,
 } = require("../../controllers/sellController");
 
 const router = require("express").Router();
@@ -15,7 +16,7 @@ router.post("/", addSellProduct);
 router.get("/", getSellProduct);
 // router.get("/notification", getSellProduct);
 router.get("/filter", getSellProductFilter);
-router.get("/category", getSellProductFilter);
+router.get("/category", getSellProductCategory);
 router.get("/:id", getSellSingleProduct);
 router.delete("/:id", deleteSellProduct);
 router.put("/:id", updateSellProduct);
