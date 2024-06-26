@@ -4,6 +4,6 @@ const logout = require("../../controllers/logoutController");
 const router = require("express").Router();
 
 router.post("/jwt", authCookieControler);
-router.post("/logout", logout);
+router.get("/logout", logout);
 
 module.exports = router;
